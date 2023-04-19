@@ -1,6 +1,6 @@
 package com.example.greencoding;
 
-public class Task {
+public class Task implements Comparable<Task> {
     private int region;
     private RequestType requestType;
     private int atmId;
@@ -33,5 +33,10 @@ public class Task {
 
     public void setAtmId(int atmId) {
         this.atmId = atmId;
+    }
+
+    @Override
+    public int compareTo(Task o) {
+        return Integer.compare(this.getRegion(), o.getRegion());
     }
 }
