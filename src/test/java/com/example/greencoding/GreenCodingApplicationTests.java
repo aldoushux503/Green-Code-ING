@@ -1,9 +1,6 @@
 package com.example.greencoding;
 
-import com.example.greencoding.atmservice.ATMServiceController;
-import com.example.greencoding.atmservice.Atm;
-import com.example.greencoding.atmservice.RequestType;
-import com.example.greencoding.atmservice.Task;
+import com.example.greencoding.atmservice.*;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
@@ -20,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @SpringBootTest
 class GreenCodingApplicationTests {
 
-    ATMServiceController atmServiceController = new ATMServiceController();
+    AtmService atmService = new AtmService();
 
     @Test
     public void testCalculateOrderExample1() {
@@ -36,7 +33,7 @@ class GreenCodingApplicationTests {
         tasks.add(new Task(5, RequestType.FAILURE_RESTART, 1));
 
         // Make a request to the calculateOrder endpoint
-        ResponseEntity<List<Atm>> response = atmServiceController.calculateOrder(tasks);
+        ResponseEntity<List<Atm>> response = atmService.calculateOrder(tasks);
 
         // Verify that the response is successful
         assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -70,7 +67,7 @@ class GreenCodingApplicationTests {
         tasks.add(new Task(3, RequestType.FAILURE_RESTART, 1));
 
         // Make a request to the calculateOrder endpoint
-        ResponseEntity<List<Atm>> response = atmServiceController.calculateOrder(tasks);
+        ResponseEntity<List<Atm>> response = atmService.calculateOrder(tasks);
 
         // Verify that the response is successful
         assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -103,7 +100,7 @@ class GreenCodingApplicationTests {
         tasks.add(new Task(1, RequestType.STANDARD, 6));
 
         // Make a request to the calculateOrder endpoint
-        ResponseEntity<List<Atm>> response = atmServiceController.calculateOrder(tasks);
+        ResponseEntity<List<Atm>> response = atmService.calculateOrder(tasks);
 
         // Verify that the response is successful
         assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -126,7 +123,7 @@ class GreenCodingApplicationTests {
         List<Task> tasks = new ArrayList<>();
 
         // Make a request to the calculateOrder endpoint
-        ResponseEntity<List<Atm>> response = atmServiceController.calculateOrder(tasks);
+        ResponseEntity<List<Atm>> response = atmService.calculateOrder(tasks);
 
         // Verify that the response is successful and contains no ATMs
         assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -142,7 +139,7 @@ class GreenCodingApplicationTests {
         List<Task> tasks = Arrays.asList(task1, task2, task3);
 
         // Make a request to the calculateOrder endpoint
-        ResponseEntity<List<Atm>> response = atmServiceController.calculateOrder(tasks);
+        ResponseEntity<List<Atm>> response = atmService.calculateOrder(tasks);
 
         // Verify that the response is successful and contains only one ATM
         assertEquals(HttpStatus.OK, response.getStatusCode());
