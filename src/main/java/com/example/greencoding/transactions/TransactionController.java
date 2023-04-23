@@ -17,8 +17,30 @@ public class TransactionController {
     private final Map<String, Account> accounts = new HashMap<>();
 
     @PostMapping("/transactions/report")
-    public ResponseEntity<List<Account>> generateReport(@RequestBody List<Transaction> transactions) {
-        return new ResponseEntity<>(null);
+    public List<Account> generateReport(@RequestBody List<Transaction> transactions) {
+        for (Transaction transaction : transactions) {
+            String debitAccountNumber = transaction.getDebitAccount();
+            String creditAccountNumber = transaction.getCreditAccount();
+            BigDecimal amount = transaction.getAmount();
+
+            Account debitAccount = getOrCreateAccount(debitAccountNumber);
+            debitAccount.debit(amount);
+
+            Account creditAccount = getOrCreateAccount(creditAccountNumber);
+            creditAccount.credit(amount);
+        }
+
+        List<Account> sortedAccounts = new ArrayList<>(accounts.values());
+        Collections.sort(sortedAccounts);
+        return sortedAccounts;
     }
 
+    private Account getOrCreateAccount(String accountNumber) {
+        Account account = accounts.get(accountNumber);
+        if (account == null) {
+            account = new Account(accountNumber);
+            accounts.put(accountNumber, account);
+        }
+        return account;
+    }
 }
