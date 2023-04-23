@@ -12,18 +12,22 @@ import java.util.stream.Collectors;
 public class ATMServiceController {
     @PostMapping("/atms/calculateOrder")
     public ResponseEntity<List<Atm>> calculateOrder(@RequestBody List<Task> tasks) {
-        // sort tasks by region number
+        // Sort tasks by region number
         Collections.sort(tasks, Comparator.comparing(Task::getRegion));
 
-        // create a map to store tasks by region number
+        // Create a map to store tasks by region number
         Map<Integer, List<Task>> regionMap = new HashMap<>();
-        // to avoid duplicate tasks in the result
-        Set<Task> addedAtm = new HashSet<>();
+        // To avoid duplicate tasks in the result
+        Set<Atm> addedAtms = new TreeSet<>(Comparator.comparing(Atm::getRegion).thenComparing(Atm::getAtmId));
 
         for (Task task : tasks) {
             int region = task.getRegion();
-            regionMap.computeIfAbsent(region, k -> new ArrayList<>()).add(task);
+            Atm atm = new Atm(task.getRegion(), task.getAtmId());
+            if (addedAtms.add(atm)) {
+                regionMap.computeIfAbsent(region, k -> new ArrayList<>()).add(task);
+            }
         }
+
 
         List<Atm> result = new ArrayList<>();
         for (int region = 1; region <= 5; region++) {
@@ -46,8 +50,6 @@ public class ATMServiceController {
                     signalLowTask = task;
                 }
             }
-
-            Atm atm;
             // Handle the failure restart task first, if present
             if (failureRestartTask != null) {
                 result.add(new Atm(failureRestartTask.getRegion(), failureRestartTask.getAtmId()));
@@ -64,8 +66,6 @@ public class ATMServiceController {
             for (Task task : standardTasks) {
                 result.add(new Atm(task.getRegion(), task.getAtmId()));
             }
-
-//            result.add(atm);
         }
 
         return ResponseEntity.ok(result);

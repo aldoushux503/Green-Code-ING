@@ -1,5 +1,7 @@
 package com.example.greencoding;
 
+import java.util.Objects;
+
 public class Atm {
     private int region;
     private int atmId;
@@ -24,4 +26,5 @@ public class Atm {
     public void setAtmId(int atmId) {
         this.atmId = atmId;
     }
+
 }
