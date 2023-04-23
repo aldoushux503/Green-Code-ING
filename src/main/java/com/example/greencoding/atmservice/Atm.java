@@ -1,4 +1,4 @@
-package com.example.greencoding;
+package com.example.greencoding.atmservice;
 
 import java.util.Objects;
 

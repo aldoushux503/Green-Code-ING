@@ -1,4 +1,4 @@
-package com.example.greencoding;
+package com.example.greencoding.atmservice;
 
 public class Task implements Comparable<Task> {
     private int region;

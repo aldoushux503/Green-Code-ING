@@ -1,5 +1,9 @@
 package com.example.greencoding;
 
+import com.example.greencoding.atmservice.ATMServiceController;
+import com.example.greencoding.atmservice.Atm;
+import com.example.greencoding.atmservice.RequestType;
+import com.example.greencoding.atmservice.Task;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
