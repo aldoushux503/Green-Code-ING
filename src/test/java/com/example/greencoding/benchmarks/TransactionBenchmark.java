@@ -9,6 +9,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+@State(Scope.Benchmark)
 public class TransactionBenchmark {
     private static final List<Transaction> TRANSACTIONS;
     TransactionService transactionService;

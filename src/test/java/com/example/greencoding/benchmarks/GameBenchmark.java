@@ -4,11 +4,14 @@ import com.example.greencoding.onlinegame.Clan;
 import com.example.greencoding.onlinegame.GameRequest;
 import com.example.greencoding.onlinegame.GameService;
 import org.openjdk.jmh.annotations.Benchmark;
+import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.Setup;
+import org.openjdk.jmh.annotations.State;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@State(Scope.Benchmark)
 public class GameBenchmark {
     private static final GameRequest GAME_REQUEST;
     GameService gameService;
