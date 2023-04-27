@@ -23,6 +23,7 @@ public class AtmBenchmark {
             Task task2 = new Task(i + 2, RequestType.SIGNAL_LOW, i+1);
             Task task3 = new Task(i % 2 + 1, RequestType.PRIORITY, i * 2);
             Task task4 = new Task(i , RequestType.FAILURE_RESTART, i);
+
             TASKS.addAll(List.of(task1, task2, task3, task4));
         }
     }
