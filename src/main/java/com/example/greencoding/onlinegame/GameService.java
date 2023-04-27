@@ -13,6 +13,12 @@ public class GameService {
         int maxPlayersPerGroup = gameRequest.getGroupCount();
 
         List<Clan> clans = new ArrayList<>(gameRequest.getClans());
+
+        if (clans.size() == 1) {
+            orderedGroups.add(clans);
+            return new ResponseEntity<>(orderedGroups, HttpStatus.OK);
+        }
+
         clans.sort(Comparator.comparingInt(Clan::getPoints).reversed()
                 .thenComparingInt(Clan::getNumberOfPlayers));
 

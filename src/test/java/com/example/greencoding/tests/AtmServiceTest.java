@@ -15,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
-class GreenCodingApplicationTests {
+class AtmServiceTest {
 
     AtmService atmService = new AtmService();
 
@@ -118,7 +118,7 @@ class GreenCodingApplicationTests {
 
 
     @Test
-    public void testCalculateOrder_noTasks() {
+    public void testCalculateOrderNoTasks() {
         // Create an empty list of tasks
         List<Task> tasks = new ArrayList<>();
 
@@ -131,7 +131,7 @@ class GreenCodingApplicationTests {
     }
 
     @Test
-    public void testCalculateOrder_allDuplicates() {
+    public void testCalculateOrderAllDuplicates() {
         // Create sample tasks that are all duplicates
         Task task1 = new Task(1, RequestType.PRIORITY, 1);
         Task task2 = new Task(1, RequestType.PRIORITY, 1);
