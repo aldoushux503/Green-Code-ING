@@ -5,18 +5,20 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentSkipListSet;
 
 @Service
 public class AtmService {
 
     public ResponseEntity<List<Atm>> calculateOrder(List<Task> tasks) {
         // Use a more memory-efficient data structure for regionMap
-        Map<Integer, LinkedList<Task>> regionMap = new HashMap<>();
+        ConcurrentHashMap<Integer, LinkedList<Task>> regionMap = new ConcurrentHashMap<>();
         final int[] maxRegion = {0};
-        Set<Atm> addedAtms = new TreeSet<>(Comparator.comparing(Atm::getRegion).thenComparing(Atm::getAtmId));
+        Set<Atm> addedAtms = new ConcurrentSkipListSet<>(Comparator.comparing(Atm::getRegion).thenComparing(Atm::getAtmId));
 
         // Use parallel processing to sort the tasks by region number
-        tasks.parallelStream().sorted(Comparator.comparing(Task::getRegion)).forEach(task -> {
+        tasks.parallelStream().sorted(Comparator.comparing(Task::getRegion)).forEachOrdered(task -> {
             Atm atm = new Atm(task.getRegion(), task.getAtmId());
             if (addedAtms.add(atm)) {
                 int region = task.getRegion();
@@ -26,7 +28,7 @@ public class AtmService {
         });
 
         // Use a single loop to handle all the tasks
-        List<Atm> result = new ArrayList<>();
+        List<Atm> result = Collections.synchronizedList(new ArrayList<>());
         for (int region = 1; region <= maxRegion[0]; region++) {
             if (!regionMap.containsKey(region)) {
                 continue;
