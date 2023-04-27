@@ -14,11 +14,11 @@ import java.util.stream.Collectors;
 @RestController
 public class TransactionController {
 
-    private final Map<String, Account> accounts = new HashMap<>();
+    private final Map<String, Account> accounts = new TreeMap<>();
 
     @PostMapping("/transactions/report")
     public List<Account> generateReport(@RequestBody List<Transaction> transactions) {
-        for (Transaction transaction : transactions) {
+        transactions.forEach(transaction -> {
             String debitAccountNumber = transaction.getDebitAccount();
             String creditAccountNumber = transaction.getCreditAccount();
             BigDecimal amount = transaction.getAmount();
@@ -28,19 +28,14 @@ public class TransactionController {
 
             Account creditAccount = getOrCreateAccount(creditAccountNumber);
             creditAccount.credit(amount);
-        }
+        });
 
-        List<Account> sortedAccounts = new ArrayList<>(accounts.values());
-        Collections.sort(sortedAccounts);
+        List<Account> sortedAccounts = new LinkedList<>(accounts.values());
+        sortedAccounts.sort(Comparator.comparing(Account::getBalance).reversed());
         return sortedAccounts;
     }
 
     private Account getOrCreateAccount(String accountNumber) {
-        Account account = accounts.get(accountNumber);
-        if (account == null) {
-            account = new Account(accountNumber);
-            accounts.put(accountNumber, account);
-        }
-        return account;
+        return accounts.computeIfAbsent(accountNumber, Account::new);
     }
 }
