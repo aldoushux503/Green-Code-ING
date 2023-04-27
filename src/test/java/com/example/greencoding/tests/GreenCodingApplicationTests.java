@@ -1,4 +1,4 @@
-package com.example.greencoding;
+package com.example.greencoding.tests;
 
 import com.example.greencoding.atmservice.*;
 import org.junit.jupiter.api.Test;
