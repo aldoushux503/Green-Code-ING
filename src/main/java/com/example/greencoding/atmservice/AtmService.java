@@ -35,17 +35,16 @@ public class AtmService {
             }
             LinkedList<Task> regionTasks = regionMap.get(region);
 
-            // Use parallel processing to handle the tasks
-            regionTasks.parallelStream().forEach(task -> {
+            regionTasks.forEach(task -> {
                 if (task.getRequestType() == RequestType.FAILURE_RESTART) {
                     result.add(new Atm(task.getRegion(), task.getAtmId()));
                 }
             });
-            regionTasks.parallelStream().filter(task -> task.getRequestType() == RequestType.PRIORITY)
+            regionTasks.stream().filter(task -> task.getRequestType() == RequestType.PRIORITY)
                     .forEach(task -> result.add(new Atm(task.getRegion(), task.getAtmId())));
-            regionTasks.parallelStream().filter(task -> task.getRequestType() == RequestType.SIGNAL_LOW)
+            regionTasks.stream().filter(task -> task.getRequestType() == RequestType.SIGNAL_LOW)
                     .forEach(task -> result.add(new Atm(task.getRegion(), task.getAtmId())));
-            regionTasks.parallelStream().filter(task -> task.getRequestType() == RequestType.STANDARD)
+            regionTasks.stream().filter(task -> task.getRequestType() == RequestType.STANDARD)
                     .forEach(task -> result.add(new Atm(task.getRegion(), task.getAtmId())));
         }
 
