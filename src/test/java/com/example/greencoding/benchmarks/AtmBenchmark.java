@@ -18,7 +18,7 @@ public class AtmBenchmark {
 
     static {
         TASKS = new ArrayList<>();
-        for (int i = 1; i <= 5_000; i++) {
+        for (int i = 1; i <= 3_500; i++) {
             Task task1 = new Task(i + 1, RequestType.STANDARD, i+2);
             Task task2 = new Task(i + 2, RequestType.SIGNAL_LOW, i+1);
             Task task3 = new Task(i % 2 + 1, RequestType.PRIORITY, i * 2);

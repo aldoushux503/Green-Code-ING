@@ -13,6 +13,7 @@ public class BenchmarkRunner {
         Options options = new OptionsBuilder()
                 .include(AtmBenchmark.class.getSimpleName())
                 .include(GameBenchmark.class.getSimpleName())
+                .include(TransactionBenchmark.class.getSimpleName())
                 .warmupIterations(3)
                 .measurementIterations(3)
                 // do not use forking or the benchmark methods will not see references stored within its class
