@@ -12,10 +12,10 @@ import java.util.List;
 public class GameService {
     public ResponseEntity<List<List<Clan>>> calculateEntranceOrder(GameRequest gameRequest) {
         int groupCount = gameRequest.getGroupCount();
-        List<Clan> clans = gameRequest.getClans();
+        List<Clan> clans = new ArrayList<>(gameRequest.getClans());;
 
         // Validate input parameters
-        if (groupCount <= 0 || clans == null || clans.isEmpty()) {
+        if (groupCount <= 0 || clans.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 

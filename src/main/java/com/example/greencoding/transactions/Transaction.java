@@ -7,6 +7,12 @@ public class Transaction {
     private String creditAccount;
     private BigDecimal amount;
 
+    public Transaction(String debitAccount, String creditAccount, BigDecimal amount) {
+        this.debitAccount = debitAccount;
+        this.creditAccount = creditAccount;
+        this.amount = amount;
+    }
+
     public String getDebitAccount() {
         return debitAccount;
     }
