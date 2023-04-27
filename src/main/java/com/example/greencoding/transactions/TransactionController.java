@@ -1,6 +1,7 @@
 package com.example.greencoding.transactions;
 
 import org.apache.coyote.Response;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,33 +15,16 @@ import java.util.stream.Collectors;
 @RestController
 public class TransactionController {
 
-    private final Map<String, Account> accounts = new HashMap<>();
+    TransactionService transactionService;
+
+    @Autowired
+    public TransactionController(TransactionService transactionService) {
+        this.transactionService = transactionService;
+    }
 
     @PostMapping("/transactions/report")
-    public List<Account> generateReport(@RequestBody List<Transaction> transactions) {
-        for (Transaction transaction : transactions) {
-            String debitAccountNumber = transaction.getDebitAccount();
-            String creditAccountNumber = transaction.getCreditAccount();
-            BigDecimal amount = transaction.getAmount();
-
-            Account debitAccount = getOrCreateAccount(debitAccountNumber);
-            debitAccount.debit(amount);
-
-            Account creditAccount = getOrCreateAccount(creditAccountNumber);
-            creditAccount.credit(amount);
-        }
-
-        List<Account> sortedAccounts = new ArrayList<>(accounts.values());
-        Collections.sort(sortedAccounts);
-        return sortedAccounts;
+    public ResponseEntity<List<Account>> getGeneratedReport(@RequestBody List<Transaction> transactions) {
+        return transactionService.generateReport(transactions);
     }
 
-    private Account getOrCreateAccount(String accountNumber) {
-        Account account = accounts.get(accountNumber);
-        if (account == null) {
-            account = new Account(accountNumber);
-            accounts.put(accountNumber, account);
-        }
-        return account;
-    }
 }
