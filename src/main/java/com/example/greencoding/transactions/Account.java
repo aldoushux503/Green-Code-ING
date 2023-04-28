@@ -9,6 +9,13 @@ public class Account implements Comparable<Account> {
     private int creditCount = 0;
     private BigDecimal balance = BigDecimal.ZERO;
 
+    public Account(String number, int debitCount, int creditCount, BigDecimal balance) {
+        this.number = number;
+        this.debitCount = debitCount;
+        this.creditCount = creditCount;
+        this.balance = balance;
+    }
+
     public Account(String number) {
         this.number = number;
     }

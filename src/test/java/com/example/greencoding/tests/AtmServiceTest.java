@@ -25,7 +25,7 @@ class AtmServiceTest {
 
 
     @ParameterizedTest
-    @MethodSource("provideAtmRequests")
+    @MethodSource("atmTestData")
     public void testCalculateOrder(List<Task> tasks, List<Atm> expectedOutput) {
         // Make a request to the calculateOrder endpoint
         ResponseEntity<List<Atm>> response = atmService.calculateOrder(tasks);
@@ -38,7 +38,7 @@ class AtmServiceTest {
         assertEquals(expectedOutput, result);
     }
 
-    private static Stream<Arguments> provideAtmRequests() {
+    private static Stream<Arguments> atmTestData() {
         return Stream.of(
                 // First example test
                 Arguments.of(
@@ -124,5 +124,4 @@ class AtmServiceTest {
                 )
         );
     }
-
 }

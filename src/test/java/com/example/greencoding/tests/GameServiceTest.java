@@ -23,7 +23,7 @@ public class GameServiceTest {
     private final GameService gameService = new GameService();
 
     @ParameterizedTest
-    @MethodSource("provideGameRequests")
+    @MethodSource("gameTestData")
     public void testCalculateEntranceOrder(GameRequest gameRequest, List<List<Clan>> expectedOrderedGroups) {
         ResponseEntity<List<List<Clan>>> response = gameService.calculateEntranceOrder(gameRequest);
 
@@ -48,7 +48,7 @@ public class GameServiceTest {
         }
     }
 
-    private static Stream<Arguments> provideGameRequests() {
+    private static Stream<Arguments> gameTestData() {
         return Stream.of(
                 // Example test
                 Arguments.of(
