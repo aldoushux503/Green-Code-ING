@@ -49,42 +49,45 @@ public class GameServiceTest {
     }
 
     private static Stream<Arguments> gameTestData() {
-        return Stream.of(
-                // Example test
-                Arguments.of(
-                        createGameRequest(
-                                6,
-                                List.of(
-                                        new Clan(4, 50),
-                                        new Clan(2, 70),
-                                        new Clan(6, 60),
-                                        new Clan(1, 15),
-                                        new Clan(5, 40),
-                                        new Clan(3, 45),
-                                        new Clan(1, 12),
-                                        new Clan(4, 40)
-                                )
-                        ),
-                        List.of(
-                                List.of(new Clan(2, 70), new Clan(4, 50)),
-                                List.of(new Clan(6, 60)),
-                                List.of(new Clan(3, 45), new Clan(1, 15), new Clan(1, 12)),
-                                List.of(new Clan(4, 40)),
-                                List.of(new Clan(5, 40))
-                        )
-                ),
-                // Single clan
-                Arguments.of(
-                        createGameRequest(
-                                3,
-                                List.of(
-                                        new Clan(4, 50)
-                                )
-                        ),
-                        List.of(
-                                List.of(new Clan(4, 50))
-                        )
+        // Example test
+        GameRequest game1 = createGameRequest(6,
+                List.of(
+                        new Clan(4, 50),
+                        new Clan(2, 70),
+                        new Clan(6, 60),
+                        new Clan(1, 15),
+                        new Clan(5, 40),
+                        new Clan(3, 45),
+                        new Clan(1, 12),
+                        new Clan(4, 40)
                 )
+        );
+
+        List<List<Clan>> expectedGame1 = List.of(
+                List.of(new Clan(2, 70), new Clan(4, 50)),
+                List.of(new Clan(6, 60)),
+                List.of(new Clan(3, 45), new Clan(1, 15), new Clan(1, 12)),
+                List.of(new Clan(4, 40)),
+                List.of(new Clan(5, 40))
+        );
+
+
+        // Single clan
+        GameRequest game2 = createGameRequest(
+                3,
+                List.of(
+                        new Clan(4, 50)
+                )
+        );
+
+        List<List<Clan>> expectedGame2 = List.of(
+                List.of(new Clan(4, 50))
+        );
+
+
+        return Stream.of(
+                Arguments.of(game1, expectedGame1),
+                Arguments.of(game2, expectedGame2)
         );
     }
 
