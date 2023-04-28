@@ -4,14 +4,15 @@ import com.example.greencoding.onlinegame.Clan;
 import com.example.greencoding.onlinegame.GameRequest;
 import com.example.greencoding.onlinegame.GameService;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -21,63 +22,113 @@ public class GameServiceTest {
 
     private final GameService gameService = new GameService();
 
-    @Test
-    public void testExample() {
-        GameRequest gameRequest = new GameRequest();
-        gameRequest.setGroupCount(6);
-        List<Clan> clans = new ArrayList<>(
-                List.of(
-                        new Clan(4, 50),
-                        new Clan(2, 70),
-                        new Clan(6, 60),
-                        new Clan(1, 15),
-                        new Clan(5, 40),
-                        new Clan(3, 45),
-                        new Clan(1, 12),
-                        new Clan(4, 40)
-                )
-        );
-        gameRequest.setClans(clans);
-
+    @ParameterizedTest
+    @MethodSource("provideGameRequests")
+    public void testCalculateEntranceOrder(GameRequest gameRequest, List<List<Clan>> expectedOrderedGroups) {
         ResponseEntity<List<List<Clan>>> response = gameService.calculateEntranceOrder(gameRequest);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         List<List<Clan>> orderedGroups = response.getBody();
-        assertTrue(orderedGroups.size() == 5);
-        assertTrue(orderedGroups.get(0).size() == 2);
-        assertTrue(orderedGroups.get(0).get(0).getPoints() == 70);
-        assertTrue(orderedGroups.get(0).get(1).getPoints() == 50);
-        assertTrue(orderedGroups.get(1).size() == 1);
-        assertTrue(orderedGroups.get(1).get(0).getPoints() == 60);
-        assertTrue(orderedGroups.get(2).size() == 3);
-        assertTrue(orderedGroups.get(2).get(0).getPoints() == 45);
-        assertTrue(orderedGroups.get(2).get(1).getPoints() == 15);
-        assertTrue(orderedGroups.get(2).get(2).getPoints() == 12);
-        assertTrue(orderedGroups.get(3).size() == 1);
-        assertTrue(orderedGroups.get(3).get(0).getPoints() == 40);
-        assertTrue(orderedGroups.get(4).size() == 1);
-        assertTrue(orderedGroups.get(4).get(0).getPoints() == 40);
+
+        assertEquals(expectedOrderedGroups.size(), orderedGroups.size());
+
+        for (int i = 0; i < expectedOrderedGroups.size(); i++) {
+            List<Clan> expectedGroup = expectedOrderedGroups.get(i);
+            List<Clan> actualGroup = orderedGroups.get(i);
+
+            assertEquals(expectedGroup.size(), actualGroup.size());
+
+            for (int j = 0; j < expectedGroup.size(); j++) {
+                Clan expectedClan = expectedGroup.get(j);
+                Clan actualClan = actualGroup.get(j);
+
+                assertEquals(expectedClan.getPoints(), actualClan.getPoints());
+                assertEquals(expectedClan.getNumberOfPlayers(), actualClan.getNumberOfPlayers());
+            }
+        }
     }
 
-    @Test
-    void testWithSingleClan() {
-        GameRequest request = new GameRequest();
-        request.setGroupCount(3);
-        Clan clan = new Clan();
-        clan.setNumberOfPlayers(4);
-        clan.setPoints(50);
-        request.setClans(Collections.singletonList(clan));
-
-        ResponseEntity<List<List<Clan>>> response = gameService.calculateEntranceOrder(request);
-
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        System.out.println(response.getBody());
-        assertEquals(1, response.getBody().size());
-        assertEquals(Collections.singletonList(clan), response.getBody().get(0));
+    private static Stream<Arguments> provideGameRequests() {
+        return Stream.of(
+                // Example test
+                Arguments.of(
+                        createGameRequest(
+                                6,
+                                List.of(
+                                        new Clan(4, 50),
+                                        new Clan(2, 70),
+                                        new Clan(6, 60),
+                                        new Clan(1, 15),
+                                        new Clan(5, 40),
+                                        new Clan(3, 45),
+                                        new Clan(1, 12),
+                                        new Clan(4, 40)
+                                )
+                        ),
+                        List.of(
+                                List.of(new Clan(2, 70), new Clan(4, 50)),
+                                List.of(new Clan(6, 60)),
+                                List.of(new Clan(3, 45), new Clan(1, 15), new Clan(1, 12)),
+                                List.of(new Clan(4, 40)),
+                                List.of(new Clan(5, 40))
+                        )
+                ),
+                // Single clan
+                Arguments.of(
+                        createGameRequest(
+                                3,
+                                List.of(
+                                        new Clan(4, 50)
+                                )
+                        ),
+                        List.of(
+                                List.of(new Clan(4, 50))
+                        )
+                )
+        );
     }
+
+    private static GameRequest createGameRequest(int groupCount, List<Clan> clans) {
+        GameRequest gameRequest = new GameRequest();
+        gameRequest.setGroupCount(groupCount);
+        gameRequest.setClans(clans);
+        return gameRequest;
+    }
+
 
     @Test
     public void testCalculateEntranceOrderWithLargeClanList() {
+        // create a list of 20000 clans with random points and number of players
+        List<Clan> clans = new ArrayList<>();
+        Random random = new Random();
+        int maxPlayersPerGroup = random.nextInt(1000) + 1;
+        int maxPointNumber = random.nextInt(100000) + 1;
+        int numberOfClans = 20000;
+        for (int i = 0; i < numberOfClans; i++) {
+            int points = random.nextInt(maxPointNumber) + 1;
+            int numberOfPlayers = random.nextInt(maxPlayersPerGroup) + 1;
+            Clan clan = new Clan(numberOfPlayers, points);
+            clans.add(clan);
+        }
 
+        // create a game request object and set the max number of players per group
+        GameRequest gameRequest = new GameRequest();
+        gameRequest.setGroupCount(maxPlayersPerGroup);
+        gameRequest.setClans(clans);
+
+        // call the method to calculate the entrance order and verify the result
+        GameService gameService = new GameService();
+        ResponseEntity<List<List<Clan>>> response = gameService.calculateEntranceOrder(gameRequest);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        List<List<Clan>> orderedGroups = response.getBody();
+
+        // verify that each group has at most maxPlayersPerGroup players
+        for (List<Clan> group : orderedGroups) {
+            int actualPlayersInGroup = 0;
+            for (Clan clan : group) {
+                actualPlayersInGroup += clan.getNumberOfPlayers();
+            }
+            assertTrue(actualPlayersInGroup <= maxPlayersPerGroup);
+        }
     }
 }
